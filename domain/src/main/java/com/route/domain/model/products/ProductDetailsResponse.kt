@@ -19,7 +19,7 @@ data class ProductDetailsData(
     val description: String? = null,
     val title: String? = null,
     val ratingsQuantity: Int? = null,
-    val ratingsAverage: Int? = null,
+    val ratingsAverage: Double? = null,
     val createdAt: String? = null,
     val price: Int? = null,
     val v: Int? = null,

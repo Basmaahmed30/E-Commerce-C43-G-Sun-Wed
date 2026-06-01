@@ -15,6 +15,10 @@ interface ProductDetailsContract {
     sealed interface Actions {
         data object Idle : Actions
         data class GetProductDetails(val productId: String?) : Actions
+        data object ClickedOnSearch : Actions
+        data object ClickedOnCart : Actions
+        data object ClickedOnBack : Actions
+
     }
 
     sealed interface Events {
