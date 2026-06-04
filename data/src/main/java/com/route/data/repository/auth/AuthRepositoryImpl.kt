@@ -23,11 +23,11 @@ class AuthRepositoryImpl @Inject constructor(
                 saveToken(it.data?.token ?: "").collect {
                     when (it) {
                         is Result.Error -> {
-                            Log.e("TAG", "login: Error : ${it.failure.message}")
+//                            Log.e("TAG", "login: Error : ${it.failure.message}")
                         }
 
                         is Result.Success -> {
-                            Log.e("TAG", "login: Success !")
+//                            Log.e("TAG", "login: Success !")
                         }
                     }
                 }
