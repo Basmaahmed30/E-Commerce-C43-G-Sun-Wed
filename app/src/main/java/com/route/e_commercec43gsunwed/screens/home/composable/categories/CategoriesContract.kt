@@ -32,6 +32,7 @@ interface CategoriesContract {
         data object NavigateToCart : Events
         data object NavigateToSearch : Events
         data class NavigateToProducts(val subCategoryId: String?) : Events
+        data class ShowMessage(val message: String) : Events
     }
 
 

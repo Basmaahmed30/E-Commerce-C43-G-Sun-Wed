@@ -20,17 +20,17 @@ class SplashViewModel @Inject constructor(
 
     fun navigate() {
         viewModelScope.launch {
-            val tokenResult = getTokenUseCase.invoke()
-            tokenResult.collect {
-                when (it) {
+            getTokenUseCase.invoke().collect { result: Result<String> ->
+                when (result) {
                     is Result.Error -> _state.emit(SplashDirections.Login)
                     is Result.Success -> {
-                        if (it.data?.isEmpty() == true || it.data?.isBlank() == true) {
+                        if (result.data?.isEmpty() == true || result.data?.isBlank() == true) {
                             _state.emit(SplashDirections.Login)
                         } else {
                             _state.emit(SplashDirections.Home)
                         }
                     }
+                    is Result.Loading<*> -> {}
                 }
             }
         }

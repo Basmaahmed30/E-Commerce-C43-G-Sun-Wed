@@ -32,6 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 import com.route.domain.model.categories.CategoryItem
 import com.route.domain.model.products.ProductItem
@@ -167,5 +168,31 @@ fun ProductCard(
                     .padding(end = 8.dp)
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CategoryCardPreview() {
+    MaterialTheme {
+        CategoryCard(category = CategoryItem(name = "Category Name", image = ""))
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ProductCardPreview() {
+    MaterialTheme {
+        ProductCard(
+            product = ProductItem(
+                title = "Product Title",
+                price = 100,
+                ratingsAverage = 4.5,
+                imageCover = ""
+            ),
+            onProductClick = {},
+            onAddCartClick = {},
+            onAddWishlistClick = {}
+        )
     }
 }

@@ -12,7 +12,8 @@ data class SubCategoryItem(
 	val id: String? = null,
 	val category: String? = null,
 	val slug: String? = null,
-	val updatedAt: String? = null
+	val updatedAt: String? = null,
+    val image: String? = null
 )
 
 data class SubCategoryMetadata(

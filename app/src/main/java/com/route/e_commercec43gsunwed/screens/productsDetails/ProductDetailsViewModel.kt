@@ -22,6 +22,10 @@ class ProductDetailsViewModel @Inject constructor(
                 is ProductDetailsContract.Actions.GetProductDetails -> {
                     getProductDetails(action.productId)
                 }
+
+                ProductDetailsContract.Actions.ClickedOnBack -> {}
+                ProductDetailsContract.Actions.ClickedOnCart -> {}
+                ProductDetailsContract.Actions.ClickedOnSearch -> {}
             }
         }
     }

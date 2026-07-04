@@ -38,4 +38,9 @@
     <string name="rating">Rating</string>
     <string name="add_to_wishlist_image">Add To Wishlist Image</string>
     <string name="icon_add_cart">Icon Add Cart</string>
+    <string name="navigate_back">Navigate back</string>
+    <string name="product_details">Product Details</string>
+    <string name="icon_decrement_product_from_cart">Icon Decrement Product from Cart</string>
+    <string name="icon_increment_product_into_cart">Icon Increment Product Into Cart</string>
+    <string name="description">Description</string>
 </resources>
