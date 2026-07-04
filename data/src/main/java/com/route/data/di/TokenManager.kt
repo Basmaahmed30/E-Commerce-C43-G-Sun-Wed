@@ -25,6 +25,9 @@ class TokenManager @Inject constructor(private val authLocalDataSource: AuthLoca
             null -> {
                 return null
             }
+            is Result.Loading<*> -> {
+                return null
+            }
         }
 
     }

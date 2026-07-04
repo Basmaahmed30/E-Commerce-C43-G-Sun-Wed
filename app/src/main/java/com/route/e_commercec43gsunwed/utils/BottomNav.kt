@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.route.e_commercec43gsunwed.R
 
@@ -79,6 +80,14 @@ fun ECommerceBottomNav(modifier: Modifier = Modifier, onTabSelected: (Int) -> Un
                 )
             }
         })
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ECommerceBottomNavPreview() {
+    MaterialTheme {
+        ECommerceBottomNav(onTabSelected = {})
+    }
 }
 
 @Immutable

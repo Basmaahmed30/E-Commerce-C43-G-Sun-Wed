@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.route.e_commercec43gsunwed.R
@@ -151,4 +152,27 @@ fun SearchTextField(
             disabledIndicatorColor = Color.Transparent,
         )
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AuthTextFieldPreview() {
+    MaterialTheme {
+        AuthTextField(
+            onTextChanged = {},
+            label = "Label",
+            hint = "Hint text"
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SearchTextFieldPreview() {
+    MaterialTheme {
+        SearchTextField(
+            hint = "Search for products",
+            onClick = {}
+        )
+    }
 }

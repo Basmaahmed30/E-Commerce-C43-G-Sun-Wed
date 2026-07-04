@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.route.e_commercec43gsunwed.R
 
 @Composable
@@ -33,4 +34,12 @@ fun ErrorDialog(modifier: Modifier = Modifier, errorState: String?, onDismissReq
         titleContentColor = colorScheme.secondary,
         textContentColor = colorScheme.secondary,
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ErrorDialogPreview() {
+    MaterialTheme {
+        ErrorDialog(errorState = "An error occurred", onDismissRequest = {})
+    }
 }

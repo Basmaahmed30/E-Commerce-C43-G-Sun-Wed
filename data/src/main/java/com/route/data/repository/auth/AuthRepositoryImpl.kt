@@ -3,6 +3,7 @@ package com.route.data.repository.auth
 import android.util.Log
 import com.route.domain.model.Result
 import com.route.domain.model.auth.AuthResponse
+import com.route.domain.model.auth.AuthUser
 import com.route.domain.model.auth.request.LoginRequestParams
 import com.route.domain.model.auth.request.RegistrationRequestParams
 import com.route.domain.repository.AuthLocalDataSource
@@ -29,7 +30,11 @@ class AuthRepositoryImpl @Inject constructor(
                         is Result.Success -> {
                             Log.e("TAG", "login: Success !")
                         }
+                        is Result.Loading<*> -> {}
                     }
+                }
+                it.data?.authUser?.let { user ->
+                    saveUser(user, params.password).collect { }
                 }
             }
         }
@@ -49,7 +54,11 @@ class AuthRepositoryImpl @Inject constructor(
                         is Result.Success -> {
                             Log.e("TAG", "Register: Success !")
                         }
+                        is Result.Loading<*> -> {}
                     }
+                }
+                it.data?.authUser?.let { user ->
+                    saveUser(user, params.password).collect { }
                 }
             }
         }
@@ -62,6 +71,14 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun getToken(): Flow<Result<String>> {
         return localDataSource.getToken()
+    }
+
+    override suspend fun saveUser(user: AuthUser, password: String?): Flow<Result<Unit>> {
+        return localDataSource.saveUser(user, password)
+    }
+
+    override suspend fun getUser(): Flow<Result<Pair<AuthUser, String>>> {
+        return localDataSource.getUser()
     }
 
 

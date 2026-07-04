@@ -8,19 +8,14 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -40,27 +35,13 @@ import com.route.e_commercec43gsunwed.utils.ErrorDialog
 @Composable
 fun LoginScreen(modifier: Modifier = Modifier) {
     val viewModel: LoginViewModel = hiltViewModel()
-    val state = viewModel.loginState.collectAsStateWithLifecycle()
-    val isLoading = viewModel.isLoading.collectAsStateWithLifecycle()
-    val emailErrorState = viewModel.emailAddressErrorState.collectAsStateWithLifecycle()
-    val passwordErrorState = viewModel.passwordErrorState.collectAsStateWithLifecycle()
-    var emailError by remember { mutableStateOf("") }
-    var passwordError by remember { mutableStateOf("") }
-    val colorScheme = MaterialTheme.colorScheme
+    val state by viewModel.loginState.collectAsStateWithLifecycle()
+    val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
+    val emailErrorState by viewModel.emailAddressErrorState.collectAsStateWithLifecycle()
+    val passwordErrorState by viewModel.passwordErrorState.collectAsStateWithLifecycle()
+    
     val navController = LocalNavController.current
-    emailError = when (emailErrorState.value) {
-        LoginValidator.Empty -> stringResource(R.string.e_mail_address_required)
-        LoginValidator.Idle -> ""
 
-        LoginValidator.Invalid -> stringResource(R.string.e_mail_address_invalid)
-        LoginValidator.Short -> ""
-    }
-    passwordError = when (passwordErrorState.value) {
-        LoginValidator.Empty -> stringResource(R.string.password_required)
-        LoginValidator.Short -> stringResource(R.string.short_password)
-        LoginValidator.Idle -> ""
-        LoginValidator.Invalid -> ""
-    }
     LaunchedEffect(Unit) {
         viewModel.loginDirections.collect {
             when (it) {
@@ -72,13 +53,54 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                         }
                     }
                 }
-
                 LoginDirections.Registration -> {
                     navController.navigate(AppRoutes.RegistrationDestination)
                 }
             }
         }
     }
+
+    LoginContent(
+        modifier = modifier,
+        state = state,
+        isLoading = isLoading,
+        emailErrorState = emailErrorState,
+        passwordErrorState = passwordErrorState,
+        onEmailChanged = { viewModel.updateEmailAddress(it) },
+        onPasswordChanged = { viewModel.updatePassword(it) },
+        onLoginClicked = { viewModel.login() },
+        onCreateAccountClicked = { viewModel.navigateToRegister() },
+        onErrorDialogDismiss = { viewModel.resetState() }
+    )
+}
+
+@Composable
+fun LoginContent(
+    modifier: Modifier = Modifier,
+    state: Result<*>?,
+    isLoading: Boolean,
+    emailErrorState: LoginValidator,
+    passwordErrorState: LoginValidator,
+    onEmailChanged: (String) -> Unit,
+    onPasswordChanged: (String) -> Unit,
+    onLoginClicked: () -> Unit,
+    onCreateAccountClicked: () -> Unit,
+    onErrorDialogDismiss: () -> Unit
+) {
+    val colorScheme = MaterialTheme.colorScheme
+    
+    val emailError = when (emailErrorState) {
+        LoginValidator.Empty -> stringResource(R.string.e_mail_address_required)
+        LoginValidator.Invalid -> stringResource(R.string.e_mail_address_invalid)
+        else -> ""
+    }
+    
+    val passwordError = when (passwordErrorState) {
+        LoginValidator.Empty -> stringResource(R.string.password_required)
+        LoginValidator.Short -> stringResource(R.string.short_password)
+        else -> ""
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -92,15 +114,12 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                 .padding(top = 36.dp)
                 .fillMaxHeight(0.13F),
             contentScale = ContentScale.FillHeight,
-
-            )
+        )
         Text(
             text = stringResource(R.string.welcome_back_to_route),
             modifier = Modifier
                 .padding(top = 80.dp, start = 16.dp)
-                .align(
-                    Alignment.Start
-                ),
+                .align(Alignment.Start),
             color = colorScheme.onSecondary,
             fontWeight = FontWeight.SemiBold,
             fontSize = 24.sp,
@@ -109,68 +128,67 @@ fun LoginScreen(modifier: Modifier = Modifier) {
             text = stringResource(R.string.please_sign_in_with_your_mail),
             modifier = Modifier
                 .padding(top = 8.dp, start = 16.dp)
-                .align(
-                    Alignment.Start
-                ),
+                .align(Alignment.Start),
             color = colorScheme.onSecondary,
             fontWeight = FontWeight.Light,
             fontSize = 16.sp,
         )
         AuthTextField(
             modifier = Modifier.padding(top = 40.dp),
-            onTextChanged = {
-                viewModel.updateEmailAddress(it)
-            },
+            onTextChanged = onEmailChanged,
             hint = stringResource(R.string.enter_your_email_address),
             label = stringResource(R.string.e_mail_address),
             error = emailError,
         )
         AuthTextField(
             modifier = Modifier.padding(top = 32.dp),
-            onTextChanged = {
-                viewModel.updatePassword(it)
-            },
+            onTextChanged = onPasswordChanged,
             hint = stringResource(R.string.enter_your_password),
             label = stringResource(R.string.password),
             error = passwordError,
+            isPassword = true
         )
         AuthButton(
             modifier = Modifier
                 .padding(top = 40.dp)
                 .fillMaxWidth(0.9F),
             text = stringResource(R.string.login),
-            isLoading = isLoading.value
-        ) { viewModel.login() }
+            isLoading = isLoading,
+            onButtonClick = onLoginClicked
+        )
         Text(
             text = stringResource(R.string.don_t_have_an_account_create_account),
             modifier = Modifier
                 .padding(top = 32.dp)
-                .clickable(true) {
-                    viewModel.navigateToRegister()
-                },
+                .clickable { onCreateAccountClicked() },
             fontWeight = FontWeight.W500,
-            fontSize = 18.sp
+            fontSize = 18.sp,
+            color = colorScheme.onSecondary
         )
     }
-    val loginState = state.value
-    when (loginState) {
-        is Result.Error -> {
-            ErrorDialog(errorState = loginState.failure.message) {
-                viewModel.resetState()
-            }
 
-        }
-
-        is Result.Success -> {
-
-        }
-
-        null -> {}
+    if (state is Result.Error) {
+        ErrorDialog(
+            errorState = state.failure.message,
+            onDismissRequest = onErrorDialogDismiss
+        )
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun LoginScreenPreview() {
-    LoginScreen()
+    MaterialTheme {
+        LoginContent(
+            state = null,
+            isLoading = false,
+            emailErrorState = LoginValidator.Idle,
+            passwordErrorState = LoginValidator.Idle,
+            onEmailChanged = {},
+            onPasswordChanged = {},
+            onLoginClicked = {},
+            onCreateAccountClicked = {},
+            onErrorDialogDismiss = {}
+        )
+    }
 }

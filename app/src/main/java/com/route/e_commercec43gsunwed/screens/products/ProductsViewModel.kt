@@ -19,13 +19,18 @@ class ProductsViewModel @Inject constructor(
     override fun handleActions(actions: ProductsContract.Actions) {
         viewModelScope.launch {
             when (actions) {
-                is ProductsContract.Actions.ClickedAddToCart -> {}
-                is ProductsContract.Actions.ClickedAddToWishlist -> {}
-                ProductsContract.Actions.ClickedOnCart -> {}
+                is ProductsContract.Actions.ClickedAddToCart -> {
+                    _events.emit(ProductsContract.Events.AddToCartEvent(actions.product))
+                }
+                is ProductsContract.Actions.ClickedAddToWishlist -> {
+                    _events.emit(ProductsContract.Events.AddToWishlistEvent(actions.product))
+                }
+                ProductsContract.Actions.ClickedOnCart -> {
+                    _events.emit(ProductsContract.Events.NavigateToCart)
+                }
                 is ProductsContract.Actions.ClickedOnProduct -> {
                     _events.emit(ProductsContract.Events.NavigateToProductDetails(actions.product))
                 }
-
                 ProductsContract.Actions.Idle -> {}
                 is ProductsContract.Actions.GetProducts -> {
                     getProducts(actions.subCategoryId)

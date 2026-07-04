@@ -24,11 +24,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.route.domain.model.Result
 import com.route.domain.model.products.ProductDetailsData
-import com.route.domain.model.products.ProductItem
 import com.route.e_commercec43gsunwed.R
 import com.route.e_commercec43gsunwed.utils.ProductDetailsToolbar
 import com.route.e_commercec43gsunwed.utils.pager.ProductDetailImagesPager
@@ -38,20 +38,34 @@ fun ProductDetailsScreen(modifier: Modifier = Modifier, productItemId: String?) 
     Log.e("TAG", "ProductDetailsScreen: $productItemId")
     val viewModel: ProductDetailsViewModel = hiltViewModel()
     val states = viewModel.states.collectAsStateWithLifecycle()
-    val colorScheme = MaterialTheme.colorScheme
     LaunchedEffect(Unit) {
         viewModel.handleActions(ProductDetailsContract.Actions.GetProductDetails(productItemId))
     }
+
+    ProductDetailsContent(
+        modifier = modifier,
+        state = states.value,
+        onAction = { viewModel.handleActions(it) }
+    )
+}
+
+@Composable
+fun ProductDetailsContent(
+    modifier: Modifier = Modifier,
+    state: ProductDetailsContract.States,
+    onAction: (ProductDetailsContract.Actions) -> Unit
+) {
+    val colorScheme = MaterialTheme.colorScheme
     Scaffold(modifier = modifier, containerColor = colorScheme.onSecondary) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             ProductDetailsToolbar(onSearchClick = {
-                viewModel.handleActions(ProductDetailsContract.Actions.ClickedOnSearch)
+                onAction(ProductDetailsContract.Actions.ClickedOnSearch)
             }, onBackClick = {
-                viewModel.handleActions(ProductDetailsContract.Actions.ClickedOnBack)
+                onAction(ProductDetailsContract.Actions.ClickedOnBack)
             }, onCartClick = {
-                viewModel.handleActions(ProductDetailsContract.Actions.ClickedOnCart)
+                onAction(ProductDetailsContract.Actions.ClickedOnCart)
             })
-            val productDetailsState = states.value.productDetails
+            val productDetailsState = state.productDetails
             when (productDetailsState) {
                 is Result.Error -> {
                     Log.e(
@@ -66,11 +80,10 @@ fun ProductDetailsScreen(modifier: Modifier = Modifier, productItemId: String?) 
                     ProductRatingCartRow(modifier = Modifier, productDetailsState.data)
                     ProductDescriptionColumn(modifier = Modifier, productDetailsState.data)
                 }
-
+                is Result.Loading<*> -> {}
                 null -> {}
             }
         }
-
     }
 }
 
@@ -184,6 +197,31 @@ fun ProductNamePriceRow(modifier: Modifier = Modifier, productDetails: ProductDe
         Text(
             text = "EGP", fontSize = 18.sp,
             fontWeight = FontWeight.W500, color = colorScheme.secondary
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ProductDetailsScreenPreview() {
+    MaterialTheme {
+        ProductDetailsContent(
+            state = ProductDetailsContract.States(
+                productDetails = Result.Success(
+                    ProductDetailsData(
+                        id = "1",
+                        title = "Nike Air Max 270",
+                        description = "The Nike Air Max 270 is a stylish and comfortable sneaker designed for everyday wear.",
+                        price = 1500,
+                        sold = 100,
+                        ratingsAverage = 4.5,
+                        ratingsQuantity = 50,
+                        images = listOf("https://images.clothes.com/nike1.jpg"),
+                        imageCover = "https://images.clothes.com/nike1.jpg"
+                    )
+                )
+            ),
+            onAction = {}
         )
     }
 }

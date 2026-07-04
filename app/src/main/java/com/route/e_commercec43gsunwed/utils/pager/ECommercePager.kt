@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.route.domain.model.products.ProductDetailsData
@@ -140,5 +141,25 @@ fun ProductDetailImagesPager(modifier: Modifier = Modifier, productDetails: Prod
 
                 )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ECommerceHorizontalPagerPreview() {
+    MaterialTheme {
+        ECommerceHorizontalPager()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ProductDetailImagesPagerPreview() {
+    MaterialTheme {
+        ProductDetailImagesPager(
+            productDetails = ProductDetailsData(
+                images = listOf("", "", "")
+            )
+        )
     }
 }
